@@ -1,4 +1,4 @@
-## Intrudoção ao Desenvolvolvimento Mobile
+## Introdução ao Desenvolvolvimento Mobile
 
 ### Tipo de Desenvolvimento
 
