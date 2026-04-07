@@ -11,7 +11,7 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Meu Aplciativo Interativo"),),
+      appBar: AppBar(title: Text("Meu Aplicativo Interativo"),),
       body: Padding(
         padding: EdgeInsets.all(8),
         child: Center(

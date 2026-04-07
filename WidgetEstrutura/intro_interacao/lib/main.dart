@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'pages/home_page.dart';
+import 'pages/contato_page.dart';
+import 'pages/formulario_page.dart';
 
 void main(List<String> args) {
   runApp(MaterialApp(
