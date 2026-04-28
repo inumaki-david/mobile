@@ -83,5 +83,11 @@ Para que o software seja considerado em conformidade com os requisitos:
 3.  A estrutura de pastas **deve** refletir a separação entre lógica (Provider) e visual (Widgets).
 
 ---
+
+### 7. Prototipagem Figma
+Link: https://www.figma.com/design/CkIxCr5wNuNmdgej61YZJP/EcoTrack---Controle-de-H%C3%A1bitos-Sustent%C3%A1veis?node-id=0-1&t=gMzx0zzR7hF8WOuu-1
+
+---
+
 **Status do Documento:** Versão 1.0 - Protótipo Funcional
 **Data:** 28 de Abril de 2026
