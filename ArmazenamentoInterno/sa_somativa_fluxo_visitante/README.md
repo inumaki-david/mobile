@@ -1,90 +1,179 @@
-# Controle de Entrada de Visitantes
+# Sistema de Controle de Acesso - Condomínio
 
-Este projeto consiste numa aplicação mobile desenvolvida com o ecossistema **Flutter** e linguagem **Dart**, utilizando o banco de dados **SQLite** para persistência de dados local. A aplicação simula um cenário real de controle de acessos, permitindo gerir o cadastro de visitantes e o histórico detalhado das suas respetivas visitas (entradas e saídas).
+Uma aplicação mobile moderna e robusta focada na **gestão automatizada e segura de portarias e condomínios**. Desenvolvido para substituir os antigos cadernos de registo, este sistema oferece um controlo rigoroso sobre o fluxo de visitantes e prestadores de serviço, garantindo histórico em tempo real, persistência de dados offline e uma interface dinâmica.
 
-A documentação apresentada nesta especificação segue as diretrizes da norma **ISO 29148:2018** (*Systems and software engineering — Life cycle processes — Requirements engineering*), garantindo a clareza, rastreabilidade e integridade dos requisitos do sistema.
+A documentação apresentada nesta especificação segue as diretrizes da norma **ISO/IEC/IEEE 29148:2018** para Engenharia de Requisitos.
 
 ---
 
-## 1. Introdução e Propósito (ISO 29148 - Seção 5.2.2)
+## 1. Introdução e Propósito (ISO 29148)
+
 
 ### 1.1 Objetivo do Sistema
-O objetivo primordial deste sistema é informatizar e simplificar o fluxo de monitorização de fluxo de pessoas em ambientes restritos (como portarias de condomínios, empresas ou instituições de ensino). O aplicativo resolve o problema do registo manual em papel, mitigando falhas humanas, perda de dados e oferecendo um histórico rastreável em tempo real de forma totalmente offline.
+
+O objetivo primordial deste sistema é informatizar e otimizar a monitorização do fluxo de pessoas em condomínios residenciais ou empresariais. O aplicativo resolve falhas humanas e perda de dados ao garantir que toda entrada possua um destino claro (unidade) e um registo exato de tempo (Check-in e Check-out).
 
 ### 1.2 Público-Alvo
-Operadores de portaria, recepcionistas, seguranças ou administradores responsáveis pela triagem, identificação e autorização de entrada de indivíduos externos em instalações privadas.
+
+Operadores de portaria, recepcionistas, seguranças e síndicos responsáveis pela triagem, identificação e autorização de entrada de indivíduos externos no condomínio.
 
 ---
 
-## 2. Escopo do Produto e Contexto (ISO 29148 - Seção 5.2.3)
+## 2. Descrição Global e Escopo 
 
-O aplicativo funciona de forma autónoma (standalone) através do armazenamento local gerenciado pelo `sqflite`. A modelagem suporta uma relação de cardinalidade de **1:N (Um para Muitos)**, onde um visitante pode possuir múltiplos registos de visitas associados ao seu identificador único.
+O aplicativo funciona de forma totalmente autónoma (*standalone*). O armazenamento de dados de negócio é gerido pelo `sqflite` (banco de dados relacional local), suportando uma relação de cardinalidade de **1:N (Um para Muitos)** entre Cadastros e Visitas. As preferências de interface do utilizador são persistidas através do `shared_preferences`.
 
 ---
 
-## 3. Especificação de Requisitos (ISO 29148 - Seção 6.2)
-
-De acordo com os padrões formais de engenharia de requisitos, as sentenças abaixo utilizam o verbo condicional **"deve"** para expressar obrigatoriedade regulamentar.
+## 3. Especificação de Requisitos 
 
 ### 3.1 Requisitos Funcionais (RF)
 
-| Identificador | Título | Descrição |
-| :--- | :--- | :--- |
-| **[RF-001]** | Registo Inicial de Visitante | O sistema deve permitir o registo de novos visitantes capturando obrigatoriamente: Nome Completo, Documento de Identificação (RG/CPF), Idade e Endereço Residencial. |
-| **[RF-002]** | Listagem de Visitantes | O sistema deve exibir uma lista dinâmica de todos os visitantes cadastrados na base de dados local, ordenados alfabeticamente. |
-| **[RF-003]** | Pesquisa/Filtro de Visitantes | O sistema deve permitir que o operador filtre a lista de visitantes inserindo o nome ou documento no campo de busca. |
-| **[RF-004]** | Visualização da Ficha Detalhada | O sistema deve disponibilizar uma tela de perfil para o visitante selecionado, expondo todos os seus dados cadastrais e a lista cronológica do seu histórico de visitas. |
-| **[RF-005]** | Registo de Entrada de Visita | O sistema deve permitir anexar um novo registo de entrada para um visitante específico, armazenando a data/hora atual e o motivo da visita. |
-| **[RF-006]** | Registo de Saída (Check-out) | O sistema deve permitir atualizar um registo de visita em aberto, adicionando a data e hora exata da saída do visitante. |
-| **[RF-007]** | Eliminação de Registos | O sistema deve permitir a exclusão de um visitante, aplicando restrição de integridade referencial para remover em cascata as suas visitas associadas. |
+| ID | Título | Descrição | Prioridade |
+| :--- | :--- | :--- | :--- |
+| **RF-001** | Registo de Indivíduos | O sistema deve permitir o registo capturando: Nome, CPF/Documento, Data de Nascimento, Endereço e Tipo (Visitante ou Prestador de Serviço). | Alta |
+| **RF-002** | Listagem de Registos | O sistema deve exibir uma lista dinâmica de todos os indivíduos cadastrados, ordenados para rápida localização. | Alta |
+| **RF-003** | Visualização da Ficha Detalhada | O sistema deve disponibilizar um perfil para o indivíduo selecionado, expondo os seus dados e o histórico cronológico de acessos. | Alta |
+| **RF-004** | Registo de Entrada (Check-in) | O sistema deve permitir anexar um registo de entrada, exigindo obrigatoriamente a Unidade de Destino (Ex: Apto 42) e o Motivo. | Alta |
+| **RF-005** | Registo de Saída (Check-out) | O sistema deve permitir atualizar uma visita "Em Andamento", gravando a data e hora exatas da saída. | Alta |
+| **RF-006** | Exclusão em Cascata | O sistema deve permitir a exclusão de um registo, aplicando restrição de integridade referencial para remover o seu histórico de visitas. | Média |
+| **RF-007** | Alternância de Tema | O sistema deve permitir ao operador alternar entre o Modo Claro e o Modo Escuro, salvando a preferência localmente. | Alta |
 
 ### 3.2 Requisitos Não-Funcionais (RNF)
 
-| Identificador | Categoria | Descrição |
-| :--- | :--- | :--- |
-| **[RNF-001]** | Persistência de Dados | O sistema deve utilizar o banco de dados embutido SQLite através do pacote `sqflite` para garantir a persistência mesmo após o fecho da app. |
-| **[RNF-002]** | Portabilidade | A aplicação deve ser construída sobre a framework Flutter, garantindo compatibilidade multiplataforma (Android e iOS). |
-| **[RNF-003]** | Conetividade | O sistema deve operar de forma 100% offline, dispensando conexões com APIs externas para o seu núcleo funcional. |
-| **[RNF-004]** | Desempenho | As consultas ao banco de dados SQLite não devem bloquear a Main Thread (UI Thread), utilizando programação assíncrona (`Future`/`async`/`await`). |
-| **[RNF-005]** | Usabilidade (UX) | A interface deve apresentar mensagens claras (Toasts ou SnackBars) confirmando o sucesso ou erro de qualquer operação de escrita. |
+| ID | Categoria | Descrição | Prioridade |
+| :--- | :--- | :--- | :--- |
+| **RNF-001** | Persistência de Dados | O sistema deve utilizar o `sqflite` para o banco de dados e o `shared_preferences` para as configurações de tema. | Alta |
+| **RNF-002** | Identidade Visual | A interface deve implementar o Design System "Ubuntu Dynamic", utilizando as fontes `Google Fonts` (Ubuntu, Questrial, Plus Jakarta Sans). | Alta |
+| **RNF-003** | Conetividade | O sistema deve operar de forma 100% offline. | Alta |
+| **RNF-004** | Desempenho | As transações no banco de dados não devem bloquear a *Main Thread*, utilizando concorrência assíncrona (`Future/async/await`). | Alta |
+
+### 3.3 Regras de Negócio (RN)
+
+* **[RN-001] Unicidade de Documento:** Não deve ser permitido o cadastro de duas pessoas com o mesmo CPF/Documento (`UNIQUE constraint`).
+* **[RN-002] Exigência de Destino:** É estritamente proibido libertar a catraca/portão (Check-in) sem informar a Unidade de Destino no condomínio.
+* **[RN-003] Visitas Simultâneas Bloqueadas:** O sistema trata as visitas de forma sequencial; uma entrada pendente deve ser visualmente destacada ("Em Andamento") até receber o Check-out.
+
+### Principais Funcionalidades
+
+* **Gestão de Perfis:** Cadastro unificado de Visitantes e Prestadores de Serviço com validação de documento.
+* **Check-in / Check-out:** Registo preciso de entradas e saídas, com vinculação obrigatória a uma unidade de destino e motivo.
+* **Funcionamento 100% Offline:** Banco de dados relacional embarcado (SQLite) garantindo operação contínua sem depender de internet.
+* **Tema Dinâmico Persistente:** Suporte a *Dark Mode* e *Light Mode* (Design System "Ubuntu Dynamic"), com as preferências do utilizador salvas via `shared_preferences`.
 
 ---
 
-## 4. Regras de Negócio (RN)
+## 4. Diagramas
 
-* **[RN-001] - Validação de Maioridade Simples:** O campo "Idade" deve aceitar apenas valores numéricos inteiros positivos superiores a 0 e inferiores a 120.
-* **[RN-002] - Unicidade do Registo:** Não deve ser permitido o cadastro de dois visitantes com o mesmo número de documento de identificação.
-* **[RN-003] - Visitas Simultâneas Bloqueadas:** Um visitante não pode ter um novo registo de entrada criado se já houver uma visita em andamento (sem data de saída definida). É obrigatório encerrar a visita atual antes de iniciar outra.
+### 4.1 Modelo Entidade-Relacionamento (MER)
+Estrutura do banco de dados relacional (SQLite), suportando a cardinalidade 1:N com exclusão em cascata.
 
----
+```mermaid
+erDiagram
+    VISITANTES {
+        int id PK "Auto Increment"
+        string nome "Not Null"
+        string documento "Unique, Not Null"
+        string data_nascimento "Not Null"
+        string endereco "Not Null"
+        string tipo "Visitante ou Prestador"
+    }
 
-## 5. Arquitetura do Software e Estrutura de Pastas
+    VISITAS {
+        int id PK "Auto Increment"
+        int visitante_id FK "On Delete Cascade"
+        string data_entrada "Not Null"
+        string data_saida "Nullable"
+        string motivo "Not Null"
+        string unidade_destino "Not Null"
+    }
 
-O projeto adota uma variação da arquitetura **MVC (Model-View-Controller)** para garantir o isolamento completo entre a interface gráfica e o acesso à base de dados.
+    VISITANTES ||--o{ VISITAS : "possui histórico de"
 
-```text
-lib/
-├── database/
-│   └── database_helper.dart  # Configuração, criação de tabelas e conexões SQLite
-├── models/
-│   ├── visitante_model.dart  # Objeto de Negócio Visitante (mapeamento Map/JSON)
-│   └── visita_model.dart       # Objeto de Negócio Visita (chave estrangeira vinculada)
-├── controllers/
-│   ├── visitante_controller.dart # Lógica de manipulação e estado dos visitantes
-│   └── visita_controller.dart      # Lógica de controle de check-in e check-out
-├── screens/
-│   ├── home_screen.dart            # Listagem de visitantes cadastrados e busca
-│   ├── cadastro_visitante_screen.dart # Formulário com validações de inputs
-│   └── detalhe_visitante_screen.dart  # Perfil do visitante e gestão do histórico
-└── widgets/
-    ├── visitante_card.dart         # Componente visual para listagem
-    └── visita_tile.dart            # Componente visual para a linha do histórico
 ```
 
-## 6. Tecnologias e Pacotes Utilizados
+### 4.2 Diagrama de Casos de Uso
+Interação principal do Operador de Portaria com as funcionalidades do sistema.
 
-Flutter & Dart - Framework e Linguagem base.
+```mermaid
+    flowchart LR
+        Operador["Operador de Portaria"]
 
-sqflite (^2.3.0) - Plugin Flutter para SQLite que suporta transações e versionamento de esquemas.
+        subgraph Sistema de Controle de Acesso
+            direction TB
+            UC1(["Cadastrar Pessoa (Visitante/Prestador)"])
+            UC2(["Consultar Ficha e Histórico"])
+            UC3(["Registrar Entrada (Check-in)"])
+            UC4(["Registrar Saída (Check-out)"])
+            UC5(["Alternar Tema (Dark/Light)"])
+            UC6(["Excluir Registro"])
+        end
 
-path (^1.9.0) - Manipulação e concatenação de caminhos de ficheiros de forma independente de plataforma.
+        Operador --- UC1
+        Operador --- UC2
+        Operador --- UC3
+        Operador --- UC4
+        Operador --- UC5
+        Operador --- UC6
+        
+        UC3 -. "<<include>>\n(Exige Unidade)" .-> UC2
+```
+
+### 4.3 Fluxo de Operação (Check-in / Check-out)
+Lógica de libertação de acessos na portaria.
+
+```mermaid
+    flowchart TD
+        A([Chegada na Portaria]) --> B{Possui Cadastro?}
+        
+        B -- Não --> C[Realizar Cadastro]
+        C --> D[Preencher: Nome, CPF, Nasc, Tipo]
+        D --> E[Salvar no SQLite]
+        E --> F[Abrir Ficha do Indivíduo]
+        
+        B -- Sim --> F
+        
+        F --> G[Preencher Unidade de Destino e Motivo]
+        G --> H[Gravar Data/Hora de Entrada]
+        H --> I[Status muda para 'Em Andamento']
+        I --> J([Acesso Liberado])
+        
+        J -. "Após o término da visita..." .-> K[Localizar Ficha]
+        K --> L[Clicar em Registrar Saída]
+        L --> M[Gravar Data/Hora de Saída]
+        M --> N[Status muda para 'Concluída']
+        N --> O([Fim da Operação])
+```
+
+---
+
+## 5. Arquitetura do Software (MVC)
+O projeto adota a arquitetura Model-View-Controller adaptada para Flutter, promovendo a separação de responsabilidades.
+
+```
+    lib/
+├── database/
+│   └── database_helper.dart      # Singleton de conexão, queries e scripts SQLite
+├── models/
+│   ├── visitante_model.dart      # POO: Mapeamento de dados do Visitante
+│   └── visita_model.dart         # POO: Mapeamento de dados da Visita
+├── screens/
+│   ├── home_screen.dart          # View: Dashboard e alternância de tema
+│   ├── cadastro_visitante_screen.dart # View: Formulários e validações
+│   └── detalhe_visitante_screen.dart  # View: Gestão de histórico e modais
+├── theme/
+│   └── theme_manager.dart        # Controller: Persistência de estado visual
+└── main.dart                     # Entrypoint e injeção do Design System
+
+```
+## 6. Tecnologias e Dependências Utilizadas
+
+**Flutter & Dart**: Framework base e linguagem de programação.
+
+**sqflite (^2.3.0)**: Persistência de dados relacionais e execução de DDL/DML.
+
+**path (^1.9.0)**: Manipulação de diretórios do SO (Android/iOS).
+
+**shared_preferences (^2.2.3)**: Persistência leve baseada em chave-valor.
+
+**google_fonts (^6.1.0)**: Tipografia dinâmica (Ubuntu, Questrial, Plus Jakarta Sans).

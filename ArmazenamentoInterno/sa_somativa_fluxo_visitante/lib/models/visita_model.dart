@@ -1,9 +1,10 @@
 class Visita {
   int? id;
-  int visitanteId; // Chave estrangeira
+  int visitanteId;
   String dataEntrada;
-  String? dataSaida; // Pode ser nulo se a visita ainda estiver em andamento
+  String? dataSaida;
   String motivo;
+  String unidadeDestino; // Regra: Unidade/Destino no condomínio
 
   Visita({
     this.id,
@@ -11,6 +12,7 @@ class Visita {
     required this.dataEntrada,
     this.dataSaida,
     required this.motivo,
+    required this.unidadeDestino,
   });
 
   Map<String, dynamic> toMap() {
@@ -20,6 +22,7 @@ class Visita {
       'data_entrada': dataEntrada,
       'data_saida': dataSaida,
       'motivo': motivo,
+      'unidade_destino': unidadeDestino,
     };
   }
 
@@ -30,6 +33,7 @@ class Visita {
       dataEntrada: map['data_entrada'],
       dataSaida: map['data_saida'],
       motivo: map['motivo'],
+      unidadeDestino: map['unidade_destino'],
     );
   }
 }

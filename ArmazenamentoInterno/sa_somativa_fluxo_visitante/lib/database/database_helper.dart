@@ -39,8 +39,9 @@ class DatabaseHelper {
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         nome TEXT NOT NULL,
         documento TEXT UNIQUE NOT NULL,
-        idade INTEGER NOT NULL,
-        endereco TEXT NOT NULL
+        data_nascimento TEXT NOT NULL,
+        endereco TEXT NOT NULL,
+        tipo TEXT NOT NULL
       )
     ''');
 
@@ -51,6 +52,7 @@ class DatabaseHelper {
         data_entrada TEXT NOT NULL,
         data_saida TEXT,
         motivo TEXT NOT NULL,
+        unidade_destino TEXT NOT NULL,
         FOREIGN KEY (visitante_id) REFERENCES visitantes (id) ON DELETE CASCADE
       )
     ''');
