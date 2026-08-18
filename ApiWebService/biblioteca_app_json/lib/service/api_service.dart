@@ -3,7 +3,7 @@ import 'dart:convert'; //biblioteca nativa json
 import 'package:http/http.dart' as http; //importar biblioteca http
 
 class ApiService {
-  static const String baseUrl = "http://localhost:3000"; //URL base API
+  static const String baseUrl = "http://10.87.38.140:3007"; //URL base API
 
   // métodos de classe para acessar os endpoints da api
   //GET(All)
@@ -11,10 +11,11 @@ class ApiService {
     final res = await http.get(
       Uri.parse("$baseUrl/$path"),
     ); // no dart precisa converter String em Endereço URL (URI.parse)
-    if (res.statusCode == 200)
+    if (res.statusCode == 200) {
       return json.decode(
         res.body,
       ); // se reposta OK -> conver json em MAP<dynamic>
+    }
     //se deu ruim => a conexão gera um erro
     // vou gerar um erro
     throw Exception("Falha de conexão com $path");
@@ -60,7 +61,7 @@ class ApiService {
   }
 
   //DELETE
-  static delete(String path, String id) async {
+  static Future<void> delete(String path, String id) async {
     final res = await http.delete(Uri.parse("$baseUrl/$path/$id"));
     if (res.statusCode != 200) throw Exception("Falha ao Deletar de $path");
   }
