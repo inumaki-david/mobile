@@ -2,7 +2,6 @@
 
 import 'package:exercicio_geolocator_clima/api_service.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:geolocator/geolocator.dart';
 
 void main(List<String> args) {
@@ -19,8 +18,8 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  String mensagem = "teste";
-  String clima = "teste";
+  String mensagem = "";
+  String clima = "";
   late Position position; 
 
   final ApiService apiService = ApiService();
@@ -66,7 +65,6 @@ class _MyAppState extends State<MyApp> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     setState(() {
       getLocation();
