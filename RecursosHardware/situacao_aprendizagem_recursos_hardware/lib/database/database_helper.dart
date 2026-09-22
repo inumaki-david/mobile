@@ -40,10 +40,10 @@ class DatabaseHelper {
     );
   }
 
-  // Insere um novo objeto Registro na tabela 'registros'.
-  Future<void> inserirRegistro(Registro registro) async {
+  // Insere um novo objeto Registro na tabela 'registros'. Retorna o id inserido.
+  Future<int> inserirRegistro(Registro registro) async {
     final db = await database;
-    await db.insert(
+    return await db.insert(
       'registros', 
       registro.toMap(), 
       conflictAlgorithm: ConflictAlgorithm.replace
@@ -55,15 +55,32 @@ class DatabaseHelper {
     final db = await database;
     final List<Map<String, dynamic>> maps = await db.query('registros', orderBy: 'id DESC');
     
-    return List.generate(maps.length, (i) {
-      return Registro(
-        id: maps[i]['id'],
-        dataHora: maps[i]['data_hora'],
-        latitude: maps[i]['latitude'],
-        longitude: maps[i]['longitude'],
-        observacao: maps[i]['observacao'],
-        caminhoFoto: maps[i]['caminho_da_foto'],
-      );
-    });
+    return maps.map((map) => Registro.fromMap(map)).toList();
+  }
+
+  // Busca um registro específico pelo ID.
+  Future<Registro?> obterRegistroPorId(int id) async {
+    final db = await database;
+    final List<Map<String, dynamic>> maps = await db.query(
+      'registros',
+      where: 'id = ?',
+      whereArgs: [id],
+      limit: 1,
+    );
+
+    if (maps.isNotEmpty) {
+      return Registro.fromMap(maps.first);
+    }
+    return null;
+  }
+
+  // Exclui um registro pelo ID.
+  Future<int> excluirRegistro(int id) async {
+    final db = await database;
+    return await db.delete(
+      'registros',
+      where: 'id = ?',
+      whereArgs: [id],
+    );
   }
 }
