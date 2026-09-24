@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:geolocator/geolocator.dart';
+import 'package:geolocator/geolocator.dart' hide ServiceStatus;
 import 'package:permission_handler/permission_handler.dart';
 import 'package:flutter_ringtone_player/flutter_ringtone_player.dart';
 import 'package:path_provider/path_provider.dart';
@@ -116,26 +116,26 @@ class _NovoRegistroScreenState extends State<NovoRegistroScreen> {
     setState(() => _estaObtendoGps = true);
 
     try {
-      // 1. Verifica se o serviço de GPS do aparelho está ativo
-      bool servicoAtivo = await Geolocator.isLocationServiceEnabled();
-      if (!servicoAtivo) {
+      // 1. Verifica se o serviço de GPS está ativo via permission_handler
+      ServiceStatus servicoAtivo = await Permission.location.serviceStatus;
+      if (!servicoAtivo.isEnabled) {
         _mostrarDialogoGpsDesativado();
         setState(() => _estaObtendoGps = false);
         return;
       }
 
-      // 2. Verifica e solicita permissões de localização
-      LocationPermission permissao = await Geolocator.checkPermission();
-      if (permissao == LocationPermission.denied) {
-        permissao = await Geolocator.requestPermission();
-        if (permissao == LocationPermission.denied) {
+      // 2. Solicita permissões de localização unicamente via permission_handler
+      PermissionStatus status = await Permission.location.status;
+      if (status.isDenied) {
+        status = await Permission.location.request();
+        if (status.isDenied) {
           _mostrarMensagem('Permissão de localização negada!');
           setState(() => _estaObtendoGps = false);
           return;
         }
       }
 
-      if (permissao == LocationPermission.deniedForever) {
+      if (status.isPermanentlyDenied) {
         _mostrarDialogoConfiguracoes(
           'Localização Necessária',
           'A permissão de localização foi negada permanentemente. Por favor, habilite nas configurações para capturar as coordenadas do ponto.',
@@ -144,7 +144,7 @@ class _NovoRegistroScreenState extends State<NovoRegistroScreen> {
         return;
       }
 
-      // 3. Obtém a posição atual com timeout e fallback (Etapa 3)
+      // 3. Permissão concedida: Obtém a posição utilizando o hardware (Geolocator)
       Position? posicaoAtual;
       try {
         posicaoAtual = await Geolocator.getCurrentPosition(
@@ -152,7 +152,6 @@ class _NovoRegistroScreenState extends State<NovoRegistroScreen> {
           timeLimit: const Duration(seconds: 15),
         );
       } catch (_) {
-        // Fallback para a última localização conhecida em caso de timeout
         posicaoAtual = await Geolocator.getLastKnownPosition();
       }
 
@@ -522,23 +521,31 @@ class _NovoRegistroScreenState extends State<NovoRegistroScreen> {
             // Botão Principal de Finalização
             SizedBox(
               height: 52,
-              child: FilledButton.icon(
-                style: FilledButton.styleFrom(
-                  backgroundColor: const Color(0xFF004F9F),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                ),
-                onPressed: _estaSalvando ? null : _salvarRegistro,
-                icon: _estaSalvando
-                    ? const SizedBox(
-                        width: 20,
-                        height: 20,
-                        child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2),
-                      )
-                    : const Icon(Icons.check_circle_outline),
-                label: Text(
-                  _estaSalvando ? 'Salvando Registro...' : 'Finalizar Registro',
-                  style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                ),
+              child: Builder(
+                builder: (context) {
+                  // A validação reativa exige Foto e GPS preenchidos
+                  final bool formularioValido = _caminhoFoto != null && _posicao != null;
+                  
+                  return FilledButton.icon(
+                    style: FilledButton.styleFrom(
+                      backgroundColor: const Color(0xFF004F9F),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                    ),
+                    // Desabilita o botão se estiver salvando OU se o formulário for inválido
+                    onPressed: (_estaSalvando || !formularioValido) ? null : _salvarRegistro,
+                    icon: _estaSalvando
+                        ? const SizedBox(
+                            width: 20,
+                            height: 20,
+                            child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2),
+                          )
+                        : const Icon(Icons.check_circle_outline),
+                    label: Text(
+                      _estaSalvando ? 'Salvando Registro...' : 'Finalizar Registro',
+                      style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                    ),
+                  );
+                }
               ),
             ),
             const SizedBox(height: 16),
