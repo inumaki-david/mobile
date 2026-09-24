@@ -1,6 +1,6 @@
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
-import '../models/registro_model.dart'; // Importa o modelo criado no Passo 1
+import '../models/registro_model.dart'; 
 
 // Classe Singleton responsável por conectar, inicializar e manipular o SQLite.
 class DatabaseHelper {
