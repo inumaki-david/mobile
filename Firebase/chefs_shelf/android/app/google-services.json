@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "481318320413",
+    "project_id": "chefs-shelf-david",
+    "storage_bucket": "chefs-shelf-david.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:481318320413:android:af1308dac087bb841ec9f4",
+        "android_client_info": {
+          "package_name": "com.example.chefs_shelf"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "481318320413-skstn6vvjm80kchb4i0qe0m7291c2kr2.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAIE9azL04JUmC793yDU64-VFxYU3AKFQQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "481318320413-skstn6vvjm80kchb4i0qe0m7291c2kr2.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
