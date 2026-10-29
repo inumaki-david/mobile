@@ -1,16 +1,18 @@
+// lib/main.dart
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'firebase_options.dart'; 
+import 'firebase_options.dart';
+import 'services/auth_service.dart';
+import 'screens/auth_screen.dart';
+import 'screens/home_screen.dart';
+import 'screens/main_screen.dart';
+import 'core/app_theme.dart';
 
 void main() async {
-  // Garante que os bindings do Flutter estão prontos antes de chamar código nativo
   WidgetsFlutterBinding.ensureInitialized();
-  
-  // Inicializa o Firebase com as opções geradas para a plataforma atual
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  
   runApp(const ChefsShelfApp());
 }
 
@@ -21,16 +23,22 @@ class ChefsShelfApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Chef\'s Shelf',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepOrange),
-        useMaterial3: true,
-      ),
-
-      
-      home: const Scaffold(
-        body: Center(
-          child: Text('Firebase Configurado com Sucesso! 🍳'),
-        ),
+      theme: AppTheme.lightTheme,
+      // StreamBuilder decide qual tela mostrar baseado no status de login
+      home: StreamBuilder(
+        stream: AuthService().userChanges,
+        builder: (context, snapshot) {
+          // Se a conexão com o Firebase estiver carregando
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Scaffold(body: Center(child: CircularProgressIndicator()));
+          }
+          // Se snapshot.hasData for true, temos um usuário logado
+          if (snapshot.hasData) {
+            return const MainScreen();
+          }
+          // Caso contrário, mostra a tela de login
+          return const AuthScreen();
+        },
       ),
     );
   }
