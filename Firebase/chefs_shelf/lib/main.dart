@@ -25,6 +25,8 @@ class ChefsShelfApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepOrange),
         useMaterial3: true,
       ),
+
+      
       home: const Scaffold(
         body: Center(
           child: Text('Firebase Configurado com Sucesso! 🍳'),
