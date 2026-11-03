@@ -1,0 +1,41 @@
+{
+  "users": [
+    {
+      "id": "1",
+      "name": "Davi Martins",
+      "email": "davi@example.com",
+      "nif": "123456789",
+      "password": "ponto123"
+    }
+  ],
+  "workplaces": [
+    {
+      "id": "1",
+      "name": "SENAI Americana",
+      "latitude": -22.7539202,
+      "longitude": -47.3510963
+    }
+  ],
+  "attendances": [
+    {
+      "employeeId": "1",
+      "employeeName": "Davi Martins",
+      "type": "Entrada",
+      "timestamp": "2026-11-03T17:24:41.749045",
+      "latitude": -22.7538567,
+      "longitude": -47.3513783,
+      "distanceMeters": 29.799534165535473,
+      "id": 1
+    },
+    {
+      "employeeId": "1",
+      "employeeName": "Davi Martins",
+      "type": "Início do intervalo",
+      "timestamp": "2026-11-03T17:25:29.775140",
+      "latitude": -22.7538567,
+      "longitude": -47.3513783,
+      "distanceMeters": 29.799534165535473,
+      "id": 2
+    }
+  ]
+}
