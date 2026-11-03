@@ -83,4 +83,14 @@ class DatabaseHelper {
       whereArgs: [id],
     );
   }
+
+  Future<int> atualizarRegistro(Registro registro) async {
+    final db = await database;
+    return await db.update(
+      'registros',
+      registro.toMap(),
+      where: 'id = ?',
+      whereArgs: [registro.id],
+    );
+  }
 }

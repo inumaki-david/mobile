@@ -85,6 +85,57 @@ class DetalhesRegistroScreen extends StatelessWidget {
     }
   }
 
+  Future<void> _editarObservacao(BuildContext context) async {
+    final controller = TextEditingController(text: registro.observacao);
+    final confirmou = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Editar Observação'),
+        content: TextField(
+          controller: controller,
+          decoration: const InputDecoration(
+            labelText: 'Nova observação',
+            border: OutlineInputBorder(),
+          ),
+          maxLines: 3,
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: const Text('Cancelar'),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.pop(ctx, true),
+            child: const Text('Salvar'),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmou == true && registro.id != null) {
+      final registroAtualizado = Registro(
+        id: registro.id,
+        dataHora: registro.dataHora,
+        latitude: registro.latitude,
+        longitude: registro.longitude,
+        caminhoFoto: registro.caminhoFoto,
+        observacao: controller.text.trim(),
+      );
+      
+      await DatabaseHelper().atualizarRegistro(registroAtualizado);
+      
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Observação atualizada com sucesso!'),
+            backgroundColor: Colors.green,
+          ),
+        );
+        Navigator.pop(context, true); // Retorna recarregando a lista principal
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -94,6 +145,11 @@ class DetalhesRegistroScreen extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Detalhes do Registro'),
         actions: [
+          IconButton(
+            icon: const Icon(Icons.edit_note),
+            tooltip: 'Editar observação',
+            onPressed: () => _editarObservacao(context),
+          ),
           IconButton(
             icon: const Icon(Icons.delete_outline),
             tooltip: 'Excluir registro',
