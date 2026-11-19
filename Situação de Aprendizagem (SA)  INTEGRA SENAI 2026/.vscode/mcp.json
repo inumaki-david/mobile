@@ -1,0 +1,20 @@
+{
+  "servers": {
+    "database": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-sqlite",
+        "./src/database/eam.sqlite"
+      ]
+    },
+    "filesystem": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-filesystem",
+        "./src"
+      ]
+    }
+  }
+}

@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#121414">
+    <meta name="description" content="Sistema de Gestão de Manutenção e Chamados Internos — INTEGRA SENAI 2026">
+    <title>Sistema EAM | INTEGRA SENAI 2026</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Questrial&family=Ubuntu:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./style.css">
+    <script src="./app.js" defer></script>
+  </head>
+  <body>
+    <div class="estrutura-aplicativo">
+      <aside class="barra-lateral" aria-label="Navegação do sistema">
+        <a class="marca-lateral" href="#inicio" aria-label="Sistema EAM — início">
+          <span class="marca-simbolo" aria-hidden="true">E</span>
+          <span class="texto-marca">sistema<br><b>EAM</b></span>
+        </a>
+        <p class="rotulo-navegacao">MENU PRINCIPAL</p>
+        <nav class="abas" role="tablist" aria-label="Visões do sistema">
+          <button class="aba ativa" id="aba-abertura" type="button" role="tab" aria-label="Abrir chamado" aria-selected="true" aria-controls="visao-abertura" data-visao="visao-abertura"><span class="icone-navegacao" aria-hidden="true">＋</span><span>Abrir chamado</span></button>
+          <button class="aba" id="aba-paineis" type="button" role="tab" aria-label="Painéis setoriais" aria-selected="false" aria-controls="visao-paineis" data-visao="visao-paineis"><span class="icone-navegacao" aria-hidden="true">▦</span><span>Painéis setoriais</span></button>
+          <button class="aba" id="aba-gestao" type="button" role="tab" aria-label="Gestão administrativa" aria-selected="false" aria-controls="visao-gestao" data-visao="visao-gestao"><span class="icone-navegacao" aria-hidden="true">◈</span><span>Gestão administrativa</span></button>
+        </nav>
+        <div class="rodape-lateral"><span aria-hidden="true"></span><span>Operação local</span></div>
+      </aside>
+
+      <div class="area-principal">
+        <header class="cabecalho-principal">
+          <div>
+            <span class="sobretitulo">INTEGRA SENAI 2026</span>
+            <h1>Sistema de chamados</h1>
+          </div>
+          <button id="alternar-tema" class="botao botao-secundario" type="button" aria-pressed="false">Tema claro</button>
+        </header>
+
+        <main id="inicio" class="conteudo">
+          <div class="aviso-emergencia" role="alert">
+            <span class="aviso-icone" aria-hidden="true">!</span>
+            <p><strong>Segurança em primeiro lugar.</strong> Em situações de risco grave ou emergência à vida, acione imediatamente os canais oficiais (190, 192, 193).</p>
+          </div>
+
+          <section class="introducao" aria-labelledby="titulo-principal">
+            <p class="sobretitulo">Operação industrial · Central de serviços</p>
+            <h2 id="titulo-principal">Gestão de manutenção e chamados internos</h2>
+            <p>Registre ocorrências, acompanhe as equipes e mantenha cada atendimento rastreável.</p>
+          </section>
+
+      <section id="visao-abertura" class="visao" role="tabpanel" aria-labelledby="aba-abertura">
+        <div class="cabecalho-secao">
+          <div><p class="sobretitulo">Novo registro</p><h2>Abertura de chamado</h2></div>
+          <span class="etiqueta">Protocolo automático</span>
+        </div>
+        <div id="confirmacao-chamado" class="confirmacao" aria-live="polite" hidden></div>
+        <div id="alerta-duplicidade" class="alerta-duplicidade" role="status" hidden></div>
+        <form id="formulario-chamado" class="formulario">
+          <label class="campo">
+            <span>Solicitante</span>
+            <input name="solicitante" type="text" maxlength="100" autocomplete="name" placeholder="Seu nome completo" required>
+          </label>
+          <label class="campo">
+            <span>Categoria</span>
+            <select name="categoria" required>
+              <option value="">Selecione uma categoria</option>
+              <option>Manutenção</option>
+              <option>Zeladoria</option>
+              <option>Vigilância</option>
+              <option>Risco</option>
+            </select>
+          </label>
+          <label class="campo">
+            <span>Local / ambiente</span>
+            <input name="localizacao" type="text" maxlength="120" placeholder="Ex.: Galpão B — Linha 2" required>
+          </label>
+          <label class="campo">
+            <span>Prioridade</span>
+            <select name="prioridade" required>
+              <option value="">Selecione a prioridade</option>
+              <option>Baixa</option>
+              <option>Média</option>
+              <option>Alta</option>
+              <option>Urgente/Risco</option>
+            </select>
+          </label>
+          <label class="campo campo-amplo">
+            <span>Descrição</span>
+            <textarea name="descricao" rows="4" maxlength="500" placeholder="Descreva brevemente o que aconteceu." required></textarea>
+          </label>
+          <label class="campo campo-amplo">
+            <span>Foto (anexo demonstrativo)</span>
+            <input name="foto" type="file" accept="image/*">
+            <small>Apenas o nome do arquivo será registrado neste MVP local.</small>
+          </label>
+          <div class="acoes-formulario campo-amplo">
+            <p>As informações pessoais ficam restritas à gestão. Os painéis públicos exibem apenas iniciais.</p>
+            <button class="botao botao-principal" type="submit">Registrar chamado</button>
+          </div>
+        </form>
+      </section>
+
+      <section id="visao-paineis" class="visao" role="tabpanel" aria-labelledby="aba-paineis" hidden>
+        <div class="cabecalho-secao">
+          <div><p class="sobretitulo">Modo telão / kiosk</p><h2>Painéis operacionais</h2></div>
+          <label class="filtro-destaque"><span>Visualizar</span>
+            <select id="filtro-painel" aria-label="Selecionar painel">
+              <option value="todos">Todos os painéis</option>
+              <option value="1">Cozinha · Zeladoria</option>
+              <option value="2">Guarita · Vigilância</option>
+              <option value="3">Oficina · Manutenção</option>
+            </select>
+          </label>
+        </div>
+        <p class="nota-painel">Chamados de risco são apresentados em todos os painéis. Atualização automática a cada 5 segundos.</p>
+        <div id="lista-paineis" class="lista-paineis" aria-live="polite"></div>
+      </section>
+
+      <section id="visao-gestao" class="visao" role="tabpanel" aria-labelledby="aba-gestao" hidden>
+        <div class="cabecalho-secao">
+          <div><p class="sobretitulo">Controle e rastreabilidade</p><h2>Painel administrativo</h2></div>
+          <span class="etiqueta">Indicadores em tempo real</span>
+        </div>
+        <div class="indicadores" aria-label="Indicadores gerenciais">
+          <article class="cartao-indicador"><span>TMA · atendimento</span><strong id="indicador-tma">—</strong><small>minutos em média</small></article>
+          <article class="cartao-indicador"><span>TMR · resolução</span><strong id="indicador-tmr">—</strong><small>minutos em média</small></article>
+          <article class="cartao-indicador"><span>Chamados ativos</span><strong id="indicador-ativos">0</strong><small>em aberto ou atendimento</small></article>
+          <article class="cartao-indicador"><span>Setor mais demandado</span><strong id="indicador-setor">—</strong><small>por volume de chamados</small></article>
+        </div>
+        <div class="filtros-gestao" aria-label="Filtros de chamados">
+          <label class="campo"><span>Setor</span><select id="filtro-setor"><option value="todos">Todos os setores</option><option value="1">Cozinha</option><option value="2">Guarita</option><option value="3">Oficina</option></select></label>
+          <label class="campo"><span>Status</span><select id="filtro-status"><option value="todos">Todos os status</option><option>Aberto</option><option>Em Atendimento</option><option>Concluído</option><option>Cancelado</option></select></label>
+          <label class="campo"><span>Prioridade</span><select id="filtro-prioridade"><option value="todos">Todas as prioridades</option><option>Baixa</option><option>Média</option><option>Alta</option><option>Urgente/Risco</option></select></label>
+        </div>
+        <div class="tabela-contorno">
+          <table>
+            <thead><tr><th>Chamado</th><th>Solicitante</th><th>Local / descrição</th><th>Prioridade</th><th>Responsável</th><th>Setor</th><th>Status</th><th>Gestor e justificativa</th><th>Ações</th></tr></thead>
+            <tbody id="tabela-chamados"></tbody>
+          </table>
+          <p id="estado-tabela" class="estado-vazio" hidden>Nenhum chamado corresponde aos filtros selecionados.</p>
+        </div>
+        <p class="nota-painel">Toda alteração de status ou setor exige o nome do gestor e uma justificativa, e gera um registro no histórico.</p>
+      </section>
+        </main>
+        <footer class="rodape"><span>Sistema EAM · INTEGRA SENAI 2026</span><span>MVP demonstrativo · armazenamento local neste navegador</span></footer>
+      </div>
+    </div>
+    <div id="notificacoes" class="notificacoes" aria-live="assertive"></div>
+  </body>
+</html>
